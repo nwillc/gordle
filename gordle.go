@@ -24,9 +24,18 @@ const (
 var (
 	//go:embed data/dict.txt
 	dict     string
-	debug    = false
-	colorMap = map[Score]string{RED: color.Red, AMBER: color.Yellow, GREEN: color.Green, NONE: color.Reset}
+	colorMap = map[Score]string{
+		RED:   color.Red,
+		AMBER: color.Yellow,
+		GREEN: color.Green,
+		NONE:  color.Reset,
+	}
 )
+
+type Letter struct {
+	letter rune
+	score  Score
+}
 
 func main() {
 	rand := rand.New(rand.NewSource(time.Now().Unix()))
@@ -36,9 +45,6 @@ func main() {
 		wordMap[word] = struct{}{}
 	}
 	target := words[rand.Intn(len(words))]
-	if debug {
-		fmt.Println("Target:", target)
-	}
 	alphabet := make([]*Letter, 26)
 	for i, l := range "abcdefghijklmnopqrstuvwxyz" {
 		alphabet[i] = NewLetter(l)
@@ -46,7 +52,7 @@ func main() {
 	display(alphabet)
 	var reader = bufio.NewReader(os.Stdin)
 	match := true
-	for attempts := 6; attempts > 0 || debug; attempts-- {
+	for attempts := 6; attempts > 0; attempts-- {
 		fmt.Print("Guess: ")
 		word, _ := reader.ReadString('\n')
 		word = word[0 : len(word)-1]
@@ -69,26 +75,17 @@ func main() {
 			}
 		}
 		display(scores)
-		update(alphabet, scores)
-		display(alphabet)
 		if match {
 			fmt.Println("Got it in", 6-attempts+1)
 			break
 		}
+		update(alphabet, scores)
+		display(alphabet)
 	}
 
 	if !match {
 		fmt.Println("The word was", target)
 	}
-}
-
-type Letter struct {
-	letter rune
-	score  Score
-}
-
-func (l *Letter) String() string {
-	return fmt.Sprintf("[%s %s]", string(l.letter), l.score)
 }
 
 func NewLetter(r rune) *Letter {
