@@ -9,6 +9,8 @@ $ go build gordle.go
 $ ./gorgle
 ```
 
+![screenshot](screenshot.png)
+
 ## Notes
 
  - I use Red/Amber/Green rather than Gray/Gold/Green.
