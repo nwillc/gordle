@@ -18,13 +18,14 @@ const (
 	RED   = "R"
 	AMBER = "A"
 	GREEN = "G"
+	NONE  = " "
 )
 
 var (
 	//go:embed data/dict.txt
 	dict     string
 	debug    = false
-	colorMap = map[Score]string{RED: color.Red, AMBER: color.Yellow, GREEN: color.Green}
+	colorMap = map[Score]string{RED: color.Red, AMBER: color.Yellow, GREEN: color.Green, NONE: color.Reset}
 )
 
 func main() {
@@ -38,6 +39,11 @@ func main() {
 	if debug {
 		fmt.Println("Target:", target)
 	}
+	alphabet := make([]*Letter, 26)
+	for i, l := range "abcdefghijklmnopqrstuvwxyz" {
+		alphabet[i] = NewLetter(l)
+	}
+	display(alphabet)
 	var reader = bufio.NewReader(os.Stdin)
 	match := true
 	for attempts := 6; attempts > 0 || debug; attempts-- {
@@ -63,6 +69,8 @@ func main() {
 			}
 		}
 		display(scores)
+		update(alphabet, scores)
+		display(alphabet)
 		if match {
 			fmt.Println("Got it in", 6-attempts+1)
 			break
@@ -84,7 +92,7 @@ func (l *Letter) String() string {
 }
 
 func NewLetter(r rune) *Letter {
-	return &Letter{letter: r, score: RED}
+	return &Letter{letter: r, score: NONE}
 }
 
 func score(word, target string) ([]*Letter, error) {
@@ -96,6 +104,7 @@ func score(word, target string) ([]*Letter, error) {
 	t := []rune(target)
 	for i, r := range w {
 		result[i] = NewLetter(r)
+		result[i].score = RED
 		if w[i] == t[i] {
 			result[i].score = GREEN
 		} else {
@@ -115,4 +124,13 @@ func display(letters []*Letter) {
 		fmt.Print(colorMap[l.score], string(l.letter))
 	}
 	fmt.Println(color.Reset)
+}
+
+func update(alphabet, scores []*Letter) {
+	for _, l := range scores {
+		offset := l.letter - rune('a')
+		if alphabet[offset].score != GREEN {
+			alphabet[offset].score = l.score
+		}
+	}
 }
