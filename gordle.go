@@ -52,19 +52,19 @@ func main() {
 	display(alphabet)
 	var reader = bufio.NewReader(os.Stdin)
 	match := true
-	for attempts := 6; attempts > 0; attempts-- {
-		fmt.Print("Guess: ")
+	for attempt := 1; attempt < 7; attempt++ {
+		fmt.Printf("Guess %d: ", attempt)
 		word, _ := reader.ReadString('\n')
 		word = word[0 : len(word)-1]
 		if _, found := wordMap[word]; !found {
 			fmt.Printf("%s not in word list.\n", word)
-			attempts++
+			attempt--
 			continue
 		}
 		scores, err := score(word, target)
 		if err != nil {
 			fmt.Println(err)
-			attempts++
+			attempt--
 			continue
 		}
 		match = true
@@ -76,7 +76,7 @@ func main() {
 		}
 		display(scores)
 		if match {
-			fmt.Println("Got it in", 6-attempts+1)
+			fmt.Println("Got it in", attempt)
 			break
 		}
 		update(alphabet, scores)
