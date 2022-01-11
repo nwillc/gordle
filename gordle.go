@@ -4,15 +4,22 @@ import (
 	"bufio"
 	_ "embed"
 	"fmt"
-	"github.com/TwiN/go-color"
-	"github.com/nwillc/genfuncs/gentype"
 	"math/rand"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/TwiN/go-color"
+	"github.com/nwillc/genfuncs/gentype"
 )
 
-type Score string
+type (
+	Score  string
+	Letter struct {
+		letter rune
+		score  Score
+	}
+)
 
 const (
 	RED   Score = "R"
@@ -30,23 +37,16 @@ var (
 		GREEN: color.Green,
 		NONE:  color.Reset,
 	}
-	alphabet = gentype.Map([]rune("abcdefghijklmnopqrstuvwxyz"),
-		func(r rune) *Letter { return NewLetter(r) })
 )
-
-type Letter struct {
-	letter rune
-	score  Score
-}
 
 func main() {
 	var (
-		words   = strings.Split(dict, "\n")
-		wordMap = gentype.NewMapSet[string]()
-		rnd     = rand.New(rand.NewSource(time.Now().Unix()))
-		match   = true
-		target  = ""
-		isGreen = func(l *Letter) bool { return l.score == GREEN }
+		alphabet = stringToLetters("abcdefghijklmnopqrstuvwxyz")
+		words    = strings.Split(dict, "\n")
+		wordMap  = gentype.NewMapSet[string]()
+		rnd      = rand.New(rand.NewSource(time.Now().Unix()))
+		target   = ""
+		isGreen  = func(l *Letter) bool { return l.score == GREEN }
 	)
 
 	for _, word := range words {
@@ -67,53 +67,31 @@ func main() {
 			attempt--
 			continue
 		}
-		scores, err := score(word, target)
-		if err != nil {
-			fmt.Println(err)
-			attempt--
-			continue
-		}
-		match = scores.All(isGreen)
-		display(scores)
-		if match {
+		scores := score(word, target)
+		if scores.All(isGreen) {
 			fmt.Println("Got it in", attempt)
-			break
+			return
 		}
+		display(scores)
 		alphabet = update(alphabet, scores)
 		display(alphabet)
 	}
 
-	if !match {
-		fmt.Println("The word was", target)
-	}
+	fmt.Println("The word was", target)
 }
 
-func NewLetter(r rune) *Letter {
-	return &Letter{letter: r, score: NONE}
-}
-
-func score(word, target string) (gentype.Slice[*Letter], error) {
-	if len(word) != len(target) {
-		return nil, fmt.Errorf("length mismatch")
-	}
-	result := make([]*Letter, len(word))
-	w := []rune(word)
-	t := []rune(target)
-	for i, r := range w {
-		result[i] = NewLetter(r)
-		result[i].score = RED
-		if w[i] == t[i] {
-			result[i].score = GREEN
-		} else {
-			for _, tc := range t {
-				if tc == w[i] {
-					result[i].score = AMBER
-					break
-				}
-			}
+func score(word, target string) gentype.Slice[*Letter] {
+	result := stringToLetters(word)
+	var t gentype.Slice[rune] = []rune(target)
+	for i, l := range result {
+		l.score = RED
+		if l.letter == t[i] {
+			l.score = GREEN
+		} else if t.Any(func(r rune) bool { return r == l.letter }) {
+			l.score = AMBER
 		}
 	}
-	return result, nil
+	return result
 }
 
 func display(letters gentype.Slice[*Letter]) {
@@ -132,4 +110,8 @@ func update(alphabet, scores gentype.Slice[*Letter]) gentype.Slice[*Letter] {
 			return sl
 		})
 	})
+}
+
+func stringToLetters(s string) gentype.Slice[*Letter] {
+	return gentype.Map([]rune(s), func(r rune) *Letter { return &Letter{letter: r, score: NONE} })
 }

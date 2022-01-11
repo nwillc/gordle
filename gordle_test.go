@@ -5,12 +5,6 @@ import (
 	"testing"
 )
 
-func TestNewLetter(t *testing.T) {
-	l := NewLetter('c')
-	assert.Equal(t, l.letter, 'c')
-	assert.Equal(t, l.score, NONE)
-}
-
 func Test_score(t *testing.T) {
 	type args struct {
 		word   string
@@ -80,8 +74,7 @@ func Test_score(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			s, err := score(tt.args.word, tt.args.target)
-			assert.NoError(t, err)
+			s := score(tt.args.word, tt.args.target)
 			assert.Equal(t, len(tt.want), len(s))
 			for i, c := range s {
 				assert.Equal(t, tt.want[i], *c, "pos %d", i)
