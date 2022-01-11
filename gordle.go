@@ -30,6 +30,8 @@ var (
 		GREEN: color.Green,
 		NONE:  color.Reset,
 	}
+	alphabet = gentype.Map([]rune("abcdefghijklmnopqrstuvwxyz"),
+		func(r rune) *Letter { return NewLetter(r) })
 )
 
 type Letter struct {
@@ -39,11 +41,8 @@ type Letter struct {
 
 func main() {
 	var (
-		words    = strings.Split(dict, "\n")
-		wordMap  = gentype.NewMapSet[string]()
-		alphabet = gentype.Map(
-			[]rune("abcdefghijklmnopqrstuvwxyz"),
-			func(r rune) *Letter { return NewLetter(r) })
+		words   = strings.Split(dict, "\n")
+		wordMap = gentype.NewMapSet[string]()
 		rnd     = rand.New(rand.NewSource(time.Now().Unix()))
 		match   = true
 		target  = ""
@@ -80,7 +79,7 @@ func main() {
 			fmt.Println("Got it in", attempt)
 			break
 		}
-		update(alphabet, scores)
+		alphabet = update(alphabet, scores)
 		display(alphabet)
 	}
 
@@ -124,11 +123,13 @@ func display(letters gentype.Slice[*Letter]) {
 	fmt.Println(color.Reset)
 }
 
-func update(alphabet, scores []*Letter) {
-	for _, l := range scores {
-		offset := l.letter - rune('a')
-		if alphabet[offset].score != GREEN {
-			alphabet[offset].score = l.score
-		}
-	}
+func update(alphabet, scores gentype.Slice[*Letter]) gentype.Slice[*Letter] {
+	return gentype.Map(alphabet, func(l *Letter) *Letter {
+		return gentype.Fold(scores, l, func(l *Letter, sl *Letter) *Letter {
+			if l.score == GREEN || sl.letter != l.letter {
+				return l
+			}
+			return sl
+		})
+	})
 }

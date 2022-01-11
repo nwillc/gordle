@@ -1,4 +1,4 @@
-module github.com/nwillc/gordle
+module gordle
 
 go 1.18
 
