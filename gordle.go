@@ -4,6 +4,7 @@ import (
 	"bufio"
 	_ "embed"
 	"fmt"
+	"github.com/nwillc/genfuncs"
 	"math/rand"
 	"os"
 	"strings"
@@ -87,7 +88,7 @@ func score(word, target string) gentype.Slice[*Letter] {
 		l.score = RED
 		if l.letter == t[i] {
 			l.score = GREEN
-		} else if t.Any(func(r rune) bool { return r == l.letter }) {
+		} else if t.Any(genfuncs.IsEqualComparable(l.letter)) {
 			l.score = AMBER
 		}
 	}
