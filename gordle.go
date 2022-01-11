@@ -4,21 +4,21 @@ import (
 	"bufio"
 	_ "embed"
 	"fmt"
+	"github.com/TwiN/go-color"
+	"github.com/nwillc/genfuncs/gentype"
 	"math/rand"
 	"os"
 	"strings"
 	"time"
-
-	"github.com/TwiN/go-color"
 )
 
 type Score string
 
 const (
-	RED   = "R"
-	AMBER = "A"
-	GREEN = "G"
-	NONE  = " "
+	RED   Score = "R"
+	AMBER Score = "A"
+	GREEN Score = "G"
+	NONE  Score = " "
 )
 
 var (
@@ -38,25 +38,32 @@ type Letter struct {
 }
 
 func main() {
-	rand := rand.New(rand.NewSource(time.Now().Unix()))
-	words := strings.Split(dict, "\n")
-	wordMap := make(map[string]struct{}, len(words))
+	var (
+		words    = strings.Split(dict, "\n")
+		wordMap  = gentype.NewMapSet[string]()
+		alphabet = gentype.Map(
+			[]rune("abcdefghijklmnopqrstuvwxyz"),
+			func(r rune) *Letter { return NewLetter(r) })
+		rnd     = rand.New(rand.NewSource(time.Now().Unix()))
+		match   = true
+		target  = ""
+		isGreen = func(l *Letter) bool { return l.score == GREEN }
+	)
+
 	for _, word := range words {
-		wordMap[word] = struct{}{}
+		wordMap.Add(word)
 	}
-	target := words[rand.Intn(len(words))]
-	alphabet := make([]*Letter, 26)
-	for i, l := range "abcdefghijklmnopqrstuvwxyz" {
-		alphabet[i] = NewLetter(l)
-	}
+
+	target = words[rnd.Intn(len(words))]
+
 	display(alphabet)
 	var reader = bufio.NewReader(os.Stdin)
-	match := true
+
 	for attempt := 1; attempt < 7; attempt++ {
 		fmt.Printf("Guess %d: ", attempt)
 		word, _ := reader.ReadString('\n')
 		word = word[0 : len(word)-1]
-		if _, found := wordMap[word]; !found {
+		if !wordMap.Contains(word) {
 			fmt.Printf("%s not in word list.\n", word)
 			attempt--
 			continue
@@ -67,13 +74,7 @@ func main() {
 			attempt--
 			continue
 		}
-		match = true
-		for _, l := range scores {
-			if l.score != GREEN {
-				match = false
-				break
-			}
-		}
+		match = scores.All(isGreen)
 		display(scores)
 		if match {
 			fmt.Println("Got it in", attempt)
@@ -92,7 +93,7 @@ func NewLetter(r rune) *Letter {
 	return &Letter{letter: r, score: NONE}
 }
 
-func score(word, target string) ([]*Letter, error) {
+func score(word, target string) (gentype.Slice[*Letter], error) {
 	if len(word) != len(target) {
 		return nil, fmt.Errorf("length mismatch")
 	}
@@ -116,7 +117,7 @@ func score(word, target string) ([]*Letter, error) {
 	return result, nil
 }
 
-func display(letters []*Letter) {
+func display(letters gentype.Slice[*Letter]) {
 	for _, l := range letters {
 		fmt.Print(colorMap[l.score], string(l.letter))
 	}

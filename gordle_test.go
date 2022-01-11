@@ -8,7 +8,7 @@ import (
 func TestNewLetter(t *testing.T) {
 	l := NewLetter('c')
 	assert.Equal(t, l.letter, 'c')
-	assert.Equal(t, l.score, RED)
+	assert.Equal(t, l.score, NONE)
 }
 
 func Test_score(t *testing.T) {
