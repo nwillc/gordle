@@ -77,7 +77,7 @@ func main() {
 		display(alphabet)
 	}
 
-	fmt.Println("The word was", target)
+	fmt.Println("The word was:", target)
 }
 
 func score(word, target string) gentype.Slice[*Letter] {
