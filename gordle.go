@@ -1,16 +1,32 @@
+/*
+ * Copyright (c) 2022, nwillc@gmail.com
+ *
+ * Permission to use, copy, modify, and/or distribute this software for any purpose with or
+ * without fee is hereby granted, provided that the above copyright notice and this permission
+ * notice appear in all copies.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+ * REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+ * INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+ * LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+ * OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+ * PERFORMANCE OF THIS SOFTWARE.
+ */
+
 package main
 
 import (
 	"bufio"
 	_ "embed"
 	"fmt"
-	"github.com/nwillc/genfuncs"
 	"math/rand"
 	"os"
 	"strings"
 	"time"
 
-	"github.com/TwiN/go-color"
+	"github.com/fatih/color"
+	"github.com/nwillc/genfuncs"
 	"github.com/nwillc/genfuncs/gentype"
 )
 
@@ -20,6 +36,7 @@ type (
 		letter rune
 		score  Score
 	}
+	ColorFunc func(...interface{})
 )
 
 const (
@@ -32,11 +49,11 @@ const (
 var (
 	//go:embed data/dict.txt
 	dict     string
-	colorMap = map[Score]string{
-		RED:   color.Red,
-		AMBER: color.Yellow,
-		GREEN: color.Green,
-		NONE:  color.Reset,
+	colorMap = map[Score]ColorFunc{
+		RED:   color.New(color.FgBlack, color.BgRed).PrintFunc(),
+		AMBER: color.New(color.FgBlack, color.BgYellow).PrintFunc(),
+		GREEN: color.New(color.FgBlack, color.BgGreen).PrintFunc(),
+		NONE:  color.New(color.FgWhite, color.BgBlack).PrintFunc(),
 	}
 )
 
@@ -97,9 +114,9 @@ func score(word, target string) gentype.Slice[*Letter] {
 
 func display(letters gentype.Slice[*Letter]) {
 	for _, l := range letters {
-		fmt.Print(colorMap[l.score], string(l.letter))
+		colorMap[l.score](string(l.letter))
 	}
-	fmt.Println(color.Reset)
+	fmt.Println()
 }
 
 func update(alphabet, scores gentype.Slice[*Letter]) gentype.Slice[*Letter] {
