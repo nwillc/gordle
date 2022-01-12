@@ -1,3 +1,8 @@
+---
+[![License](https://img.shields.io/github/license/nwillc/gordle.svg)](https://tldrlegal.com/license/-isc-license)
+[![CI](https://github.com/nwillc/gordle/workflows/CI/badge.svg)](https://github.com/nwillc/gordle/actions/workflows/CI.yml)
+[![Releases](https://img.shields.io/github/tag/nwillc/gordle.svg)](https://github.com/nwillc/gordle/tags)
+---
 # Gordle
 
 A Go language version of Wordle.
