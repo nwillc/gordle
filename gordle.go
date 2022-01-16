@@ -25,9 +25,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/nwillc/genfuncs"
-
 	"github.com/fatih/color"
+	"github.com/nwillc/genfuncs"
 	"github.com/nwillc/genfuncs/container"
 )
 
@@ -68,9 +67,7 @@ func main() {
 		isGreen  = func(l *Letter) bool { return l.score == GREEN }
 	)
 
-	for _, word := range words {
-		wordMap.Add(word)
-	}
+	wordMap.AddAll(words...)
 
 	target = words[rnd.Intn(len(words))]
 
