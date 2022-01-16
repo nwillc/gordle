@@ -25,9 +25,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/fatih/color"
 	"github.com/nwillc/genfuncs"
-	"github.com/nwillc/genfuncs/gentype"
+
+	"github.com/fatih/color"
+	"github.com/nwillc/genfuncs/container"
 )
 
 type (
@@ -61,7 +62,7 @@ func main() {
 	var (
 		alphabet = stringToLetters("abcdefghijklmnopqrstuvwxyz")
 		words    = strings.Split(dict, "\n")
-		wordMap  = gentype.NewMapSet[string]()
+		wordMap  = container.NewMapSet[string]()
 		rnd      = rand.New(rand.NewSource(time.Now().Unix()))
 		target   = ""
 		isGreen  = func(l *Letter) bool { return l.score == GREEN }
@@ -98,9 +99,9 @@ func main() {
 	fmt.Println("The word was:", target)
 }
 
-func score(word, target string) gentype.Slice[*Letter] {
+func score(word, target string) container.Slice[*Letter] {
 	result := stringToLetters(word)
-	var t gentype.Slice[rune] = []rune(target)
+	var t container.Slice[rune] = []rune(target)
 	for i, l := range result {
 		l.score = RED
 		if l.letter == t[i] {
@@ -112,16 +113,16 @@ func score(word, target string) gentype.Slice[*Letter] {
 	return result
 }
 
-func display(letters gentype.Slice[*Letter]) {
+func display(letters container.Slice[*Letter]) {
 	for _, l := range letters {
 		colorMap[l.score](string(l.letter))
 	}
 	fmt.Println()
 }
 
-func update(alphabet, scores gentype.Slice[*Letter]) gentype.Slice[*Letter] {
-	return gentype.Map(alphabet, func(l *Letter) *Letter {
-		return gentype.Fold(scores, l, func(l *Letter, sl *Letter) *Letter {
+func update(alphabet, scores container.Slice[*Letter]) container.Slice[*Letter] {
+	return container.Map(alphabet, func(l *Letter) *Letter {
+		return container.Fold(scores, l, func(l *Letter, sl *Letter) *Letter {
 			if l.score == GREEN || sl.letter != l.letter {
 				return l
 			}
@@ -130,6 +131,6 @@ func update(alphabet, scores gentype.Slice[*Letter]) gentype.Slice[*Letter] {
 	})
 }
 
-func stringToLetters(s string) gentype.Slice[*Letter] {
-	return gentype.Map([]rune(s), func(r rune) *Letter { return &Letter{letter: r, score: NONE} })
+func stringToLetters(s string) container.Slice[*Letter] {
+	return container.Map([]rune(s), func(r rune) *Letter { return &Letter{letter: r, score: NONE} })
 }
