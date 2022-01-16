@@ -61,13 +61,11 @@ func main() {
 	var (
 		alphabet = stringToLetters("abcdefghijklmnopqrstuvwxyz")
 		words    = strings.Split(dict, "\n")
-		wordMap  = container.NewMapSet[string]()
+		wordSet  = container.NewMapSet[string](words...)
 		rnd      = rand.New(rand.NewSource(time.Now().Unix()))
 		target   = ""
 		isGreen  = func(l *Letter) bool { return l.score == GREEN }
 	)
-
-	wordMap.AddAll(words...)
 
 	target = words[rnd.Intn(len(words))]
 
@@ -78,7 +76,7 @@ func main() {
 		fmt.Printf("Guess %d: ", attempt)
 		word, _ := reader.ReadString('\n')
 		word = word[0 : len(word)-1]
-		if !wordMap.Contains(word) {
+		if !wordSet.Contains(word) {
 			fmt.Printf("%s not in word list.\n", word)
 			attempt--
 			continue
@@ -89,7 +87,7 @@ func main() {
 			return
 		}
 		display(scores)
-		alphabet = update(alphabet, scores)
+		alphabet = updateScores(alphabet, scores)
 		display(alphabet)
 	}
 
@@ -117,7 +115,7 @@ func display(letters container.Slice[*Letter]) {
 	fmt.Println()
 }
 
-func update(alphabet, scores container.Slice[*Letter]) container.Slice[*Letter] {
+func updateScores(alphabet, scores container.Slice[*Letter]) container.Slice[*Letter] {
 	return container.Map(alphabet, func(l *Letter) *Letter {
 		return container.Fold(scores, l, func(l *Letter, sl *Letter) *Letter {
 			if l.score == GREEN || sl.letter != l.letter {
