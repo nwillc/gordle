@@ -20,14 +20,11 @@ import (
 	"bufio"
 	_ "embed"
 	"fmt"
-	"math/rand"
-	"os"
-	"strings"
-	"time"
-
 	"github.com/fatih/color"
 	"github.com/nwillc/genfuncs"
 	"github.com/nwillc/genfuncs/container"
+	"os"
+	"strings"
 )
 
 type (
@@ -59,15 +56,14 @@ var (
 
 func main() {
 	var (
-		alphabet = stringToLetters("abcdefghijklmnopqrstuvwxyz")
-		words    = strings.Split(dict, "\n")
-		wordSet  = container.NewMapSet[string](words...)
-		rnd      = rand.New(rand.NewSource(time.Now().Unix()))
-		target   = ""
-		isGreen  = func(l *Letter) bool { return l.score == GREEN }
+		alphabet                         = stringToLetters("abcdefghijklmnopqrstuvwxyz")
+		words    container.Slice[string] = strings.Split(dict, "\n")
+		wordSet                          = container.ToSet(words)
+		target                           = ""
+		isGreen                          = func(l *Letter) bool { return l.score == GREEN }
 	)
 
-	target = words[rnd.Intn(len(words))]
+	target = words.Random()
 
 	display(alphabet)
 	var reader = bufio.NewReader(os.Stdin)
