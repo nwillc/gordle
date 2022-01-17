@@ -20,11 +20,12 @@ import (
 	"bufio"
 	_ "embed"
 	"fmt"
+	"os"
+	"strings"
+
 	"github.com/fatih/color"
 	"github.com/nwillc/genfuncs"
 	"github.com/nwillc/genfuncs/container"
-	"os"
-	"strings"
 )
 
 type (
@@ -59,18 +60,16 @@ func main() {
 		alphabet                         = stringToLetters("abcdefghijklmnopqrstuvwxyz")
 		words    container.Slice[string] = strings.Split(dict, "\n")
 		wordSet                          = container.ToSet(words)
-		target                           = ""
+		target                           = words.Random()
 		isGreen                          = func(l *Letter) bool { return l.score == GREEN }
+		input                            = bufio.NewReader(os.Stdin)
 	)
 
-	target = words.Random()
-
 	display(alphabet)
-	var reader = bufio.NewReader(os.Stdin)
 
 	for attempt := 1; attempt < 7; attempt++ {
 		fmt.Printf("Guess %d: ", attempt)
-		word, _ := reader.ReadString('\n')
+		word, _ := input.ReadString('\n')
 		word = word[0 : len(word)-1]
 		if !wordSet.Contains(word) {
 			fmt.Printf("%s not in word list.\n", word)
