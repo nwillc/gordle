@@ -63,6 +63,7 @@ func main() {
 		target                           = words.Random()
 		isGreen                          = func(l *Letter) bool { return l.score == GREEN }
 		input                            = bufio.NewReader(os.Stdin)
+		masks                            = container.NewDeque[container.Slice[*Letter]]()
 	)
 
 	display(alphabet)
@@ -77,15 +78,18 @@ func main() {
 			continue
 		}
 		scores := score(word, target)
+		masks.Add(container.Map(scores, func(letter *Letter) *Letter { return &Letter{letter: '_', score: letter.score} }))
 		if scores.All(isGreen) {
-			fmt.Println("Got it in", attempt)
+			fmt.Printf("Got it in %d/6.\n", attempt)
+			for _, m := range masks.Values() {
+				display(m)
+			}
 			return
 		}
 		display(scores)
 		alphabet = updateScores(alphabet, scores)
 		display(alphabet)
 	}
-
 	fmt.Println("The word was:", target)
 }
 
