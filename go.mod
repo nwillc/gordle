@@ -4,7 +4,7 @@ go 1.18
 
 require (
 	github.com/fatih/color v1.13.0
-	github.com/nwillc/genfuncs v0.6.4
+	github.com/nwillc/genfuncs v0.6.5
 	github.com/stretchr/testify v1.7.0
 )
 
