@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        target: [ { 'os': 'darwin', 'arch': 'amd64' }, { 'os': 'darwin', 'arch': 'arm64' }, { 'os': 'linux', 'arch': 'amd64' }, { 'os': 'linux', 'arch': '386' } ]
+        target: [ { 'os': 'darwin', 'arch': 'amd64' }, { 'os': 'darwin', 'arch': 'arm64' }, { 'os': 'linux', 'arch': 'amd64' }, { 'os': 'linux', 'arch': '386' },  {  'os':  'windows', 'arch': 'amd64' }  ]
 
     steps:
     - uses: actions/checkout@v2
@@ -60,7 +60,7 @@ jobs:
     needs: [ artifacts, release ]
     strategy:
       matrix:
-        target: [ { 'os': 'darwin', 'arch': 'amd64' }, { 'os': 'darwin', 'arch': 'arm64' }, { 'os': 'linux', 'arch': 'amd64' }, { 'os': 'linux', 'arch': '386' } ]
+        target: [ { 'os': 'darwin', 'arch': 'amd64' }, { 'os': 'darwin', 'arch': 'arm64' }, { 'os': 'linux', 'arch': 'amd64' }, { 'os': 'linux', 'arch': '386' },  {  'os':  'windows', 'arch': 'amd64' } ]
 
     steps:
     - uses: actions/checkout@v2
