@@ -24,7 +24,6 @@ import (
 	"strings"
 
 	"github.com/fatih/color"
-	"github.com/nwillc/genfuncs"
 	"github.com/nwillc/genfuncs/container"
 )
 
@@ -57,7 +56,7 @@ var (
 
 func main() {
 	var (
-		alphabet                         = stringToLetters("abcdefghijklmnopqrstuvwxyz")
+		alphabet                         = stringToLetters("abcdefghijklmnopqrstuvwxyz", NONE)
 		words    container.Slice[string] = strings.Split(dict, "\n")
 		wordSet                          = container.ToSet(words)
 		target                           = words.Random()
@@ -93,18 +92,38 @@ func main() {
 	fmt.Println("The word was:", target)
 }
 
-func score(word, target string) container.Slice[*Letter] {
-	result := stringToLetters(word)
-	var t container.Slice[rune] = []rune(target)
-	for i, l := range result {
-		l.score = RED
-		if l.letter == t[i] {
+func score(guess, target string) container.Slice[*Letter] {
+	guessLetters := stringToLetters(guess, RED)
+	targetLetters := stringToLetters(target, RED)
+
+	// Greens
+	for i, l := range guessLetters {
+		if l.letter == targetLetters[i].letter {
 			l.score = GREEN
-		} else if t.Any(genfuncs.IsEqualComparable(l.letter)) {
-			l.score = AMBER
+			targetLetters[i].score = GREEN
 		}
 	}
-	return result
+
+	// Ambers
+	guessRuneSet := container.NewMapSet(container.Map(guessLetters, func(l *Letter) rune { return l.letter })...).Values()
+	for _, r := range guessRuneSet {
+		amberCount := container.Fold(targetLetters, 0, func(c int, l *Letter) int {
+			if l.notGreen(r) {
+				return c + 1
+			}
+			return c
+		})
+		for _, l := range guessLetters {
+			if amberCount < 1 {
+				break
+			}
+			if l.notGreen(r) {
+				l.score = AMBER
+				amberCount--
+			}
+		}
+	}
+	return guessLetters
 }
 
 func display(letters container.Slice[*Letter]) {
@@ -125,6 +144,10 @@ func updateScores(alphabet, scores container.Slice[*Letter]) container.Slice[*Le
 	})
 }
 
-func stringToLetters(s string) container.Slice[*Letter] {
-	return container.Map([]rune(s), func(r rune) *Letter { return &Letter{letter: r, score: NONE} })
+func stringToLetters(s string, score Score) container.Slice[*Letter] {
+	return container.Map([]rune(s), func(r rune) *Letter { return &Letter{letter: r, score: score} })
+}
+
+func (l *Letter) notGreen(r rune) bool {
+	return l.letter == r && l.score != GREEN
 }
