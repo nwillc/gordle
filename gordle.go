@@ -80,9 +80,7 @@ func main() {
 		masks.Add(container.Map(scores, func(letter *Letter) *Letter { return &Letter{letter: '_', score: letter.score} }))
 		if scores.All(isGreen) {
 			fmt.Printf("Got it in %d/6.\n", attempt)
-			for _, m := range masks.Values() {
-				display(m)
-			}
+			masks.Values().ForEach(display)
 			return
 		}
 		display(scores)
@@ -97,46 +95,46 @@ func score(guess, target string) container.Slice[*Letter] {
 	targetLetters := stringToLetters(target, RED)
 
 	// Greens
-	for i, l := range guessLetters {
+	guessLetters.ForEachI(func(i int, l *Letter) {
 		if l.letter == targetLetters[i].letter {
 			l.score = GREEN
 			targetLetters[i].score = GREEN
 		}
-	}
+	})
 
 	// Ambers
-	guessRuneSet := container.NewMapSet(container.Map(guessLetters, func(l *Letter) rune { return l.letter })...).Values()
-	for _, r := range guessRuneSet {
+	distinctGuessRunes := container.Distinct(container.Map(guessLetters, func(l *Letter) rune { return l.letter }))
+	distinctGuessRunes.ForEach(func(r rune) {
 		amberCount := container.Fold(targetLetters, 0, func(c int, l *Letter) int {
 			if l.notGreen(r) {
-				return c + 1
+				c++
 			}
 			return c
 		})
-		for _, l := range guessLetters {
+		guessLetters.ForEach(func(l *Letter) {
 			if amberCount < 1 {
-				break
+				return
 			}
 			if l.notGreen(r) {
 				l.score = AMBER
 				amberCount--
 			}
-		}
-	}
+		})
+	})
 	return guessLetters
 }
 
 func display(letters container.Slice[*Letter]) {
-	for _, l := range letters {
+	letters.ForEach(func(l *Letter) {
 		colorMap[l.score](string(l.letter))
-	}
+	})
 	fmt.Println()
 }
 
 func updateScores(alphabet, scores container.Slice[*Letter]) container.Slice[*Letter] {
 	return container.Map(alphabet, func(l *Letter) *Letter {
 		return container.Fold(scores, l, func(l *Letter, sl *Letter) *Letter {
-			if l.score == GREEN || sl.letter != l.letter {
+			if !l.notGreen(sl.letter) {
 				return l
 			}
 			return sl
