@@ -56,13 +56,13 @@ var (
 
 func main() {
 	var (
-		alphabet                         = stringToLetters("abcdefghijklmnopqrstuvwxyz", NONE)
-		words    container.Slice[string] = strings.Split(dict, "\n")
-		wordSet                          = container.ToSet(words)
-		target                           = words.Random()
-		isGreen                          = func(l *Letter) bool { return l.score == GREEN }
-		input                            = bufio.NewReader(os.Stdin)
-		masks                            = container.NewDeque[container.Slice[*Letter]]()
+		alphabet                          = stringToLetters("abcdefghijklmnopqrstuvwxyz", NONE)
+		words    container.GSlice[string] = strings.Split(dict, "\n")
+		wordSet                           = container.ToSet(words)
+		target                            = words.Random()
+		isGreen                           = func(l *Letter) bool { return l.score == GREEN }
+		input                             = bufio.NewReader(os.Stdin)
+		masks                             = container.NewDeque[container.GSlice[*Letter]]()
 	)
 
 	display(alphabet)
@@ -90,7 +90,7 @@ func main() {
 	fmt.Println("The word was:", target)
 }
 
-func score(guess, target string) container.Slice[*Letter] {
+func score(guess, target string) container.GSlice[*Letter] {
 	guessLetters := stringToLetters(guess, RED)
 	targetLetters := stringToLetters(target, RED)
 
@@ -124,14 +124,14 @@ func score(guess, target string) container.Slice[*Letter] {
 	return guessLetters
 }
 
-func display(letters container.Slice[*Letter]) {
+func display(letters container.GSlice[*Letter]) {
 	letters.ForEach(func(l *Letter) {
 		colorMap[l.score](string(l.letter))
 	})
 	fmt.Println()
 }
 
-func updateScores(alphabet, scores container.Slice[*Letter]) container.Slice[*Letter] {
+func updateScores(alphabet, scores container.GSlice[*Letter]) container.GSlice[*Letter] {
 	return container.Map(alphabet, func(l *Letter) *Letter {
 		return container.Fold(scores, l, func(l *Letter, sl *Letter) *Letter {
 			if !l.notGreen(sl.letter) {
@@ -142,7 +142,7 @@ func updateScores(alphabet, scores container.Slice[*Letter]) container.Slice[*Le
 	})
 }
 
-func stringToLetters(s string, score Score) container.Slice[*Letter] {
+func stringToLetters(s string, score Score) container.GSlice[*Letter] {
 	return container.Map([]rune(s), func(r rune) *Letter { return &Letter{letter: r, score: score} })
 }
 

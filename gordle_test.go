@@ -197,7 +197,7 @@ func Test_updateScores(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want container.Slice[*Letter]
+		want container.GSlice[*Letter]
 	}{
 		{
 			name: "adieu",
@@ -248,7 +248,7 @@ func Test_updateScores(t *testing.T) {
 	}
 }
 
-func assignScore(letters container.Slice[*Letter], r rune, score Score) container.Slice[*Letter] {
+func assignScore(letters container.GSlice[*Letter], r rune, score Score) container.GSlice[*Letter] {
 	return container.Map(letters, func(l *Letter) *Letter {
 		if l.letter == r {
 			l.score = score
