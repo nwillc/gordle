@@ -13,6 +13,8 @@ github.com/nwillc/genfuncs v0.8.0 h1:uErHpLMCYHojB5+3B6Tgn0851D4k3ajee24/EK+Hg7s
 github.com/nwillc/genfuncs v0.8.0/go.mod h1:6UFpyGvtQWZLN/PcRSq0LAEjgbXAwf299UyvCVvIiA0=
 github.com/nwillc/genfuncs v0.8.3 h1:XEAIeEn3D1qjDnxoWIqtH0o4Acm6OmF2fMmTPp/u09I=
 github.com/nwillc/genfuncs v0.8.3/go.mod h1:21S7hKzfNeHAzrPKBswiu5U6s0W9agdiIaTHw8XUhwQ=
+github.com/nwillc/genfuncs v0.8.4 h1:5YmD05rIMWQo0MDX7kx2cE3eUFO7r9Ekp9Mt+6a1DwA=
+github.com/nwillc/genfuncs v0.8.4/go.mod h1:21S7hKzfNeHAzrPKBswiu5U6s0W9agdiIaTHw8XUhwQ=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
