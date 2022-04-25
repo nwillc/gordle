@@ -80,7 +80,7 @@ func main() {
 		masks.Add(container.Map(scores, func(letter *Letter) *Letter { return &Letter{letter: '_', score: letter.score} }))
 		if scores.All(isGreen) {
 			fmt.Printf("Got it in %d/6.\n", attempt)
-			masks.Values().ForEach(display)
+			masks.Values().ForEach(func(_ int, mask container.GSlice[*Letter]) { display(mask) })
 			return
 		}
 		display(scores)
@@ -95,7 +95,7 @@ func score(guess, target string) container.GSlice[*Letter] {
 	targetLetters := stringToLetters(target, RED)
 
 	// Greens
-	guessLetters.ForEachI(func(i int, l *Letter) {
+	guessLetters.ForEach(func(i int, l *Letter) {
 		if l.letter == targetLetters[i].letter {
 			l.score = GREEN
 			targetLetters[i].score = GREEN
@@ -104,14 +104,14 @@ func score(guess, target string) container.GSlice[*Letter] {
 
 	// Ambers
 	distinctGuessRunes := container.Distinct(container.Map(guessLetters, func(l *Letter) rune { return l.letter }))
-	distinctGuessRunes.ForEach(func(r rune) {
+	distinctGuessRunes.ForEach(func(_ int, r rune) {
 		amberCount := container.Fold(targetLetters, 0, func(c int, l *Letter) int {
 			if l.notGreen(r) {
 				c++
 			}
 			return c
 		})
-		guessLetters.ForEach(func(l *Letter) {
+		guessLetters.ForEach(func(_ int, l *Letter) {
 			if amberCount < 1 {
 				return
 			}
@@ -125,7 +125,7 @@ func score(guess, target string) container.GSlice[*Letter] {
 }
 
 func display(letters container.GSlice[*Letter]) {
-	letters.ForEach(func(l *Letter) {
+	letters.ForEach(func(_ int, l *Letter) {
 		colorMap[l.score](string(l.letter))
 	})
 	fmt.Println()
