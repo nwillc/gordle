@@ -71,7 +71,15 @@ func main() {
 		fmt.Printf("Guess %d: ", attempt)
 		word, _ := input.ReadString('\n')
 		word = word[0 : len(word)-1]
-		if len(word) == 0 || !wordSet.Contains(word) {
+		if len(word) == 0 {
+			attempt--
+			continue
+		}
+		if word[0] == '.' {
+			fmt.Println("Giving up on word:", target)
+			return
+		}
+		if !wordSet.Contains(word) {
 			fmt.Printf("%s not in word list.\n", word)
 			attempt--
 			continue
