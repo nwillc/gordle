@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/nwillc/genfuncs/container"
+	"github.com/nwillc/genfuncs/container/gslices"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -249,7 +250,7 @@ func Test_updateScores(t *testing.T) {
 }
 
 func assignScore(letters container.GSlice[*Letter], r rune, score Score) container.GSlice[*Letter] {
-	return container.Map(letters, func(l *Letter) *Letter {
+	return gslices.Map(letters, func(l *Letter) *Letter {
 		if l.letter == r {
 			l.score = score
 		}

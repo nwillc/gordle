@@ -20,6 +20,7 @@ import (
 	"bufio"
 	_ "embed"
 	"fmt"
+	"github.com/nwillc/genfuncs/container/gslices"
 	"os"
 	"strings"
 
@@ -58,7 +59,7 @@ func main() {
 	var (
 		alphabet                          = stringToLetters("abcdefghijklmnopqrstuvwxyz", NONE)
 		words    container.GSlice[string] = strings.Split(dict, "\n")
-		wordSet                           = container.ToSet(words)
+		wordSet                           = gslices.ToSet(words)
 		target                            = words.Random()
 		isGreen                           = func(l *Letter) bool { return l.score == GREEN }
 		input                             = bufio.NewReader(os.Stdin)
@@ -85,7 +86,7 @@ func main() {
 			continue
 		}
 		scores := score(word, target)
-		masks.Add(container.Map(scores, func(letter *Letter) *Letter { return &Letter{letter: '_', score: letter.score} }))
+		masks.Add(gslices.Map(scores, func(letter *Letter) *Letter { return &Letter{letter: '_', score: letter.score} }))
 		if scores.All(isGreen) {
 			fmt.Printf("Got it in %d/6.\n", attempt)
 			masks.Values().ForEach(func(_ int, mask container.GSlice[*Letter]) { display(mask) })
@@ -111,9 +112,9 @@ func score(guess, target string) container.GSlice[*Letter] {
 	})
 
 	// Ambers
-	distinctGuessRunes := container.Distinct(container.Map(guessLetters, func(l *Letter) rune { return l.letter }))
+	distinctGuessRunes := gslices.Distinct(gslices.Map(guessLetters, func(l *Letter) rune { return l.letter }))
 	distinctGuessRunes.ForEach(func(_ int, r rune) {
-		amberCount := container.Fold(targetLetters, 0, func(c int, l *Letter) int {
+		amberCount := gslices.Fold(targetLetters, 0, func(c int, l *Letter) int {
 			if l.notGreen(r) {
 				c++
 			}
@@ -140,8 +141,8 @@ func display(letters container.GSlice[*Letter]) {
 }
 
 func updateScores(alphabet, scores container.GSlice[*Letter]) container.GSlice[*Letter] {
-	return container.Map(alphabet, func(l *Letter) *Letter {
-		return container.Fold(scores, l, func(l *Letter, sl *Letter) *Letter {
+	return gslices.Map(alphabet, func(l *Letter) *Letter {
+		return gslices.Fold(scores, l, func(l *Letter, sl *Letter) *Letter {
 			if !l.notGreen(sl.letter) {
 				return l
 			}
@@ -151,7 +152,7 @@ func updateScores(alphabet, scores container.GSlice[*Letter]) container.GSlice[*
 }
 
 func stringToLetters(s string, score Score) container.GSlice[*Letter] {
-	return container.Map([]rune(s), func(r rune) *Letter { return &Letter{letter: r, score: score} })
+	return gslices.Map([]rune(s), func(r rune) *Letter { return &Letter{letter: r, score: score} })
 }
 
 func (l *Letter) notGreen(r rune) bool {
