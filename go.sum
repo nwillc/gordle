@@ -25,6 +25,8 @@ github.com/nwillc/genfuncs v0.14.0 h1:4+p57b75kFgqmgXcHPuT58dJKXQTxxV6ztqXyK/nTW
 github.com/nwillc/genfuncs v0.14.0/go.mod h1:MoL6QtVLb0vTYzCyKHNRrIrW8Uk9Z93YA/1FGKCASlo=
 github.com/nwillc/genfuncs v0.14.1 h1:Yc9VnaPrf0+eDKzWuMRf+38cOR/6gNZAks7kicSGk/Y=
 github.com/nwillc/genfuncs v0.14.1/go.mod h1:MoL6QtVLb0vTYzCyKHNRrIrW8Uk9Z93YA/1FGKCASlo=
+github.com/nwillc/genfuncs v0.14.3 h1:pH6oOrUOsUC2MLfDiFepLWDTopxcmuA+1Aag03ipkdM=
+github.com/nwillc/genfuncs v0.14.3/go.mod h1:539VTRiSSAunHQ4T3TBgsnG4Mc1hJIjoJs5y3oUVBaM=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/stretchr/objx v0.1.0/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
@@ -40,6 +42,8 @@ golang.org/x/exp v0.0.0-20220516143420-24438e51023a h1:tiLLxEjKNE6Hrah/Dp/cyHvsy
 golang.org/x/exp v0.0.0-20220516143420-24438e51023a/go.mod h1:lgLbSvA5ygNOMpwM/9anMpWVlVJ7Z+cHWq/eFuinpGE=
 golang.org/x/exp v0.0.0-20220518171630-0b5c67f07fdf h1:oXVg4h2qJDd9htKxb5SCpFBHLipW6hXmL3qpUixS2jw=
 golang.org/x/exp v0.0.0-20220518171630-0b5c67f07fdf/go.mod h1:yh0Ynu2b5ZUe3MQfp2nM0ecK7wsgouWTDN0FNeJuIys=
+golang.org/x/exp v0.0.0-20220602145555-4a0574d9293f h1:KK6mxegmt5hGJRcAnEDjSNLxIRhZxDcgwMbcO/lMCRM=
+golang.org/x/exp v0.0.0-20220602145555-4a0574d9293f/go.mod h1:yh0Ynu2b5ZUe3MQfp2nM0ecK7wsgouWTDN0FNeJuIys=
 golang.org/x/sys v0.0.0-20200116001909-b77594299b42/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20200223170610-d5e6a3e2c0ae/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20210630005230-0f9fa26af87c/go.mod h1:oPkhp1MJrh7nUepCBck5+mAzfO9JrbApNNgaTdGDITg=
@@ -65,3 +69,5 @@ gopkg.in/yaml.v3 v3.0.0-20220512140231-539c8e751b99 h1:dbuHpmKjkDzSOMKAWl10QNlga
 gopkg.in/yaml.v3 v3.0.0-20220512140231-539c8e751b99/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
 gopkg.in/yaml.v3 v3.0.0 h1:hjy8E9ON/egN1tAYqKb61G10WtihqetD4sz2H+8nIeA=
 gopkg.in/yaml.v3 v3.0.0/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
+gopkg.in/yaml.v3 v3.0.1 h1:fxVm/GzAzEWqLHuvctI91KS9hhNmmWOoWu0XTYJS7CA=
+gopkg.in/yaml.v3 v3.0.1/go.mod h1:K4uyk7z7BCEPqu6E+C64Yfv1cQ7kz7rIZviUmN+EgEM=
