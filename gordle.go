@@ -21,6 +21,7 @@ import (
 	_ "embed"
 	"fmt"
 	"github.com/nwillc/genfuncs/container/gslices"
+	"github.com/nwillc/genfuncs/container/sequences"
 	"os"
 	"strings"
 
@@ -87,7 +88,7 @@ func main() {
 		}
 		scores := score(word, target)
 		masks.Add(gslices.Map(scores, func(letter *Letter) *Letter { return &Letter{letter: '_', score: letter.score} }))
-		if scores.All(isGreen) {
+		if sequences.All[*Letter](scores, isGreen) {
 			fmt.Printf("Got it in %d/6.\n", attempt)
 			masks.Values().ForEach(func(_ int, mask container.GSlice[*Letter]) { display(mask) })
 			return
@@ -114,7 +115,7 @@ func score(guess, target string) container.GSlice[*Letter] {
 	// Ambers
 	distinctGuessRunes := gslices.Distinct(gslices.Map(guessLetters, func(l *Letter) rune { return l.letter }))
 	distinctGuessRunes.ForEach(func(_ int, r rune) {
-		amberCount := gslices.Fold(targetLetters, 0, func(c int, l *Letter) int {
+		amberCount := sequences.Fold[*Letter, int](targetLetters, 0, func(c int, l *Letter) int {
 			if l.notGreen(r) {
 				c++
 			}
@@ -142,7 +143,7 @@ func display(letters container.GSlice[*Letter]) {
 
 func updateScores(alphabet, scores container.GSlice[*Letter]) container.GSlice[*Letter] {
 	return gslices.Map(alphabet, func(l *Letter) *Letter {
-		return gslices.Fold(scores, l, func(l *Letter, sl *Letter) *Letter {
+		return sequences.Fold[*Letter, *Letter](scores, l, func(l *Letter, sl *Letter) *Letter {
 			if !l.notGreen(sl.letter) {
 				return l
 			}
